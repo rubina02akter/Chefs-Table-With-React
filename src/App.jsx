@@ -1,34 +1,52 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Banner from './assets/components/Banner'
+import Header from './assets/components/Header'
+import OurRecipes from './assets/components/OurRecipes'
+import Recipes from './assets/components/Recipes'
+import Sidebar from './assets/components/Sidebar'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const[recipeQueue, setRecipeQueue] = useState([])
+  const[preparedRecipe, setPreparedRecipe] = useState([])
 
+  const addRecipeToQueue = recipe => {
+  const isExist = recipeQueue.find(
+    previousRecipe => previousRecipe.recipe_id === recipe.recipe_id
+  )
+  if(!isExist){
+    setRecipeQueue([...recipeQueue,recipe])
+  }
+  else{
+    alert('Recipe already exist')
+  }
+  }
+ const handleRemove = id => {
+  // find which recipe to delete
+  const deletedRecipe = recipeQueue.find(recipe => recipe.recipe_id === id)
+  //delete from want to cook table
+  const updatedQueue = recipeQueue.filter(recipe => recipe.recipe_id !== id)
+
+  setPreparedRecipe(updatedQueue)
+  setPreparedRecipe([...preparedRecipe,deletedRecipe])
+ }
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='container mx-auto px-4'>
+     {/* header section */}
+     <Header></Header>
+     {/* banner section */}
+     <Banner></Banner>
+     {/* recipe section */}
+     <OurRecipes></OurRecipes>
+     {/* Recipe Card Section */}
+     <section className='flex flex-col md:flex-row gap-6'>
+      {/* cards */}
+      <Recipes addRecipeToQueue={addRecipeToQueue}></Recipes>
+      {/* sidebar */}
+      <Sidebar handleRemove={handleRemove} recipeQueue={recipeQueue}></Sidebar>
+     </section>
+    </div>
   )
 }
 
